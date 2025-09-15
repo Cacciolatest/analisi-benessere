@@ -1,0 +1,1518 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Analisi del Benessere - Metodo Partner di Vita</title>
+<style>
+  :root {
+    --primary-color: #c41e3a;
+    --primary-light: #f8f0f1;
+    --secondary-color: #2b79c2;
+    --text-dark: #333;
+    --text-light: #666;
+    --border-color: #e2e2e2;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+  }
+  
+  * {
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    color: var(--text-dark);
+    line-height: 1.6;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    overflow: hidden;
+  }
+  
+  .header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #a01729 100%);
+    color: white;
+    padding: 30px;
+    text-align: center;
+  }
+  
+  .header h1 {
+    margin: 0 0 10px 0;
+    font-size: 32px;
+    font-weight: 300;
+  }
+  
+  .header .subtitle {
+    font-size: 16px;
+    opacity: 0.9;
+    margin-bottom: 20px;
+  }
+  
+  .progress-bar {
+    background: rgba(255,255,255,0.2);
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 20px;
+  }
+  
+  .progress-fill {
+    background: white;
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+  
+  .content {
+    padding: 30px;
+  }
+  
+  .intro {
+    text-align: center;
+    margin-bottom: 40px;
+    padding: 25px;
+    background: var(--primary-light);
+    border-radius: 8px;
+    border-left: 4px solid var(--primary-color);
+  }
+  
+  .section {
+    margin-bottom: 30px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+  }
+  
+  .section:hover {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+  }
+  
+  .section-header {
+    background: linear-gradient(135deg, var(--secondary-color) 0%, #1e5f8e 100%);
+    color: white;
+    padding: 20px 25px;
+    font-weight: 600;
+    font-size: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .section-score {
+    background: rgba(255,255,255,0.2);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
+  .question {
+    padding: 25px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s ease;
+  }
+  
+  .question:last-child {
+    border-bottom: none;
+  }
+  
+  .question:hover {
+    background: #fafafa;
+  }
+  
+  .question-title {
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 15px;
+    font-size: 16px;
+  }
+  
+  .question-number {
+    color: var(--primary-color);
+    font-weight: 700;
+    margin-right: 8px;
+  }
+  
+  .options {
+    display: grid;
+    gap: 12px;
+  }
+  
+  .option {
+    position: relative;
+    cursor: pointer;
+    padding: 15px 20px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    background: white;
+  }
+  
+  .option:hover {
+    border-color: var(--secondary-color);
+    background: #f8f9ff;
+  }
+  
+  .option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
+  
+  .option input[type="radio"]:checked + .option-content {
+    color: var(--secondary-color);
+    font-weight: 600;
+  }
+  
+  .option input[type="radio"]:checked ~ .checkmark {
+    background: var(--secondary-color);
+    border-color: var(--secondary-color);
+  }
+  
+  .option input[type="radio"]:checked ~ .checkmark:after {
+    display: block;
+  }
+  
+  .option-content {
+    padding-left: 35px;
+    position: relative;
+  }
+  
+  .checkmark {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    height: 20px;
+    width: 20px;
+    background: white;
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+    transition: all 0.2s ease;
+  }
+  
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: white;
+  }
+  
+  .points {
+    float: right;
+    background: var(--primary-color);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  
+  .controls {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin: 40px 0;
+    flex-wrap: wrap;
+  }
+  
+  .btn {
+    padding: 15px 30px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    min-width: 150px;
+  }
+  
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #a01729 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(196, 30, 58, 0.3);
+  }
+  
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(196, 30, 58, 0.4);
+  }
+  
+  .btn-secondary {
+    background: white;
+    color: var(--text-dark);
+    border: 2px solid var(--border-color);
+  }
+  
+  .btn-secondary:hover {
+    background: #f8f9fa;
+    border-color: var(--secondary-color);
+  }
+  
+  .results {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    margin-top: 30px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    border: 1px solid var(--border-color);
+    display: none;
+  }
+  
+  .results-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .total-score {
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+  }
+  
+  .rating {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+  
+  .rating.excellent { color: var(--success-color); }
+  .rating.good { color: var(--warning-color); }
+  .rating.needs-improvement { color: var(--danger-color); }
+  
+  .scores-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin: 30px 0;
+  }
+  
+  .score-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+  }
+  
+  .score-card h3 {
+    margin: 0 0 10px 0;
+    color: var(--text-dark);
+    font-size: 16px;
+  }
+  
+  .score-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--secondary-color);
+  }
+  
+  .chart-container {
+    max-width: 500px;
+    margin: 30px auto;
+    padding: 20px;
+    background: #fafafa;
+    border-radius: 8px;
+  }
+  
+  .anagrafica {
+    background: #f8f9fa;
+    padding: 25px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    border: 1px solid var(--border-color);
+  }
+  
+  .anagrafica h3 {
+    margin-top: 0;
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 10px;
+  }
+  
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-group label {
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--text-dark);
+  }
+  
+  .form-group input {
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .form-group input:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 2px rgba(43, 121, 194, 0.2);
+  }
+  
+  .footer {
+    text-align: center;
+    padding: 20px;
+    background: #f8f9fa;
+    color: var(--text-light);
+    font-size: 14px;
+  }
+  
+  @media (max-width: 768px) {
+    body {
+      padding: 10px;
+    }
+    
+    .content {
+      padding: 20px;
+    }
+    
+    .question {
+      padding: 20px;
+    }
+    
+    .controls {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .btn {
+      width: 100%;
+      max-width: 300px;
+    }
+    
+    .total-score {
+      font-size: 36px;
+    }
+    
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  @media print {
+    body {
+      background: white;
+    }
+    
+    .container {
+      box-shadow: none;
+    }
+    
+    .controls {
+      display: none;
+    }
+    
+    .header {
+      background: var(--primary-color) !important;
+      color: white !important;
+      -webkit-print-color-adjust: exact;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>Analisi del Benessere</h1>
+    <div class="subtitle">Metodo  - Strumento di valutazione interattivo</div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress"></div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="intro">
+      <h2>Benvenuto nella tua Analisi del Benessere</h2>
+      <p>Questo strumento ti aiuterà a valutare il tuo livello di preparazione per affrontare serenamente il futuro. Rispondi alle domande seguenti per ottenere una panoramica completa delle tue scelte di protezione e pianificazione.</p>
+    </div>
+
+    <div class="anagrafica">
+      <h3>Dati del Cliente</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="nome">Nome e Cognome</label>
+          <input type="text" id="nome" placeholder="Inserisci nome e cognome">
+        </div>
+        <div class="form-group">
+          <label for="nascita">Data di nascita</label>
+          <input type="date" id="nascita">
+        </div>
+        <div class="form-group">
+          <label for="professione">Professione</label>
+          <input type="text" id="professione" placeholder="Inserisci professione">
+        </div>
+        <div class="form-group">
+          <label for="famiglia">Nucleo familiare</label>
+          <input type="text" id="famiglia" placeholder="Es: coniuge, 2 figli">
+        </div>
+      </div>
+    </div>
+
+    <form id="analisiForm">
+      <!-- Sezione Patrimonio -->
+      <div class="section" data-section="patrimonio">
+        <div class="section-header">
+          <span>Sezione 1 - Protezione del Patrimonio</span>
+          <span class="section-score" id="patrimonio-score">0 / 30</span>
+        </div>
+
+        <div class="question">
+          <div class="question-title">
+            <span class="question-number">1.</span>
+            Quanto sei soddisfatto delle scelte che hai fatto per proteggere la tua casa?
+          </div>
+          <div class="options">
+            <label class="option">
+              <input type="radio" name="q1" value="5">
+              <div class="option-content">
+                Ho scelto coperture complete che mi danno totale serenità
+                <span class="points">5 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q1" value="3">
+              <div class="option-content">
+                Ho attivato alcune protezioni importanti
+                <span class="points">3 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q1" value="1">
+              <div class="option-content">
+                Ho una copertura di base
+                <span class="points">1 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q1" value="0">
+              <div class="option-content">
+                Sto valutando le opzioni disponibili
+                <span class="points">0 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="question-title">
+            <span class="question-number">2.</span>
+            Hai sotto controllo la protezione per i tuoi spostamenti quotidiani?
+          </div>
+          <div class="options">
+            <label class="option">
+              <input type="radio" name="q2" value="4">
+              <div class="option-content">
+                Sì, ho scelto coperture complete con assistenza e tutela legale
+                <span class="points">4 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q2" value="3">
+              <div class="option-content">
+                Ho le coperture principali con qualche servizio aggiuntivo
+                <span class="points">3 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q2" value="1">
+              <div class="option-content">
+                Ho l'essenziale richiesto dalla legge
+                <span class="points">1 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q2" value="0">
+              <div class="option-content">
+                Sto cercando la soluzione migliore per me
+                <span class="points">0 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="question-title">
+            <span class="question-number">3.</span>
+            Come gestisci la tutela dei tuoi beni più preziosi?
+          </div>
+          <div class="options">
+            <label class="option">
+              <input type="radio" name="q3" value="4">
+              <div class="option-content">
+                Ho scelto protezioni specifiche per tutti i beni importanti
+                <span class="points">4 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q3" value="2">
+              <div class="option-content">
+                Ho coperto i beni di maggior valore
+                <span class="points">2 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q3" value="1">
+              <div class="option-content">
+                Sto inventariando cosa proteggere
+                <span class="points">1 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q3" value="0">
+              <div class="option-content">
+                Non ho ancora considerato questa necessità
+                <span class="points">0 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="question-title">
+            <span class="question-number">4.</span>
+            Ti senti preparato per affrontare eventi atmosferici straordinari?
+          </div>
+          <div class="options">
+            <label class="option">
+              <input type="radio" name="q4" value="5">
+              <div class="option-content">
+                Ho costruito un piano completo: coperture adeguate e piano di emergenza familiare
+                <span class="points">5 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q4" value="3">
+              <div class="option-content">
+                Ho attivato le coperture principali
+                <span class="points">3 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q4" value="1">
+              <div class="option-content">
+                Ho un piccolo fondo di emergenza
+                <span class="points">1 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q4" value="0">
+              <div class="option-content">
+                Mi affido alle risorse pubbliche quando necessario
+                <span class="points">0 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="question-title">
+            <span class="question-number">5.</span>
+            Ti senti sereno rispetto ai danni involontari a terzi?
+          </div>
+          <div class="options">
+            <label class="option">
+              <input type="radio" name="q5" value="4">
+              <div class="option-content">
+                Sì, ho scelto una copertura completa che mi dà piena serenità
+                <span class="points">4 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q5" value="2">
+              <div class="option-content">
+                Ho una copertura dell'abitazione che include la RC
+                <span class="points">2 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q5" value="1">
+              <div class="option-content">
+                Sono consapevole del tema e sto valutando
+                <span class="points">1 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q5" value="0">
+              <div class="option-content">
+                Non ho ancora approfondito questo aspetto
+                <span class="points">0 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="question-title">
+            <span class="question-number">6.</span>
+            Come hai pianificato la difesa dei tuoi interessi in caso di controversie?
+          </div>
+          <div class="options">
+            <label class="option">
+              <input type="radio" name="q6" value="4">
+              <div class="option-content">
+                Ho un piano completo: so cosa fare e ho coperture/servizi di assistenza
+                <span class="points">4 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q6" value="2">
+              <div class="option-content">
+                Mi organizzo bene, ho riferimenti e qualche copertura
+                <span class="points">2 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q6" value="1">
+              <div class="option-content">
+                Me la caverei con qualche aiuto esterno
+                <span class="points">1 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q6" value="0">
+              <div class="option-content">
+                Dovrei migliorare la mia preparazione
+                <span class="points">0 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sezione Persona -->
+      <div class="section" data-section="persona">
+        <div class="section-header">
+          <span>Sezione 2 - Protezione della Persona</span>
+          <span class="section-score" id="persona-score">0 / 40</span>
+        </div>
+
+        <div class="question">
+          <div class="question-title">
+            <span class="question-number">7.</span>
+            Come descrivi la tua attenzione alla salute e al benessere?
+          </div>
+          <div class="options">
+            <label class="option">
+              <input type="radio" name="q7" value="4">
+              <div class="option-content">
+                Molto attenta: ho costruito una rete di professionisti e faccio prevenzione regolare
+                <span class="points">4 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q7" value="3">
+              <div class="option-content">
+                Abbastanza attenta: faccio controlli e ho alcune coperture
+                <span class="points">3 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q7" value="1">
+              <div class="option-content">
+                Basilare: mi rivolgo al sistema pubblico e qualche controllo privato
+                <span class="points">1 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q7" value="0">
+              <div class="option-content">
+                Da migliorare: potrei essere più sistematico
+                <span class="points">0 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="question-title">
+            <span class="question-number">8.</span>
+            Ti senti sereno rispetto alla possibilità di accedere rapidamente alle cure migliori?
+          </div>
+          <div class="options">
+            <label class="option">
+              <input type="radio" name="q8" value="5">
+              <div class="option-content">
+                Sì, ho organizzato coperture complete con rete privata e massimali adeguati
+                <span class="points">5 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q8" value="3">
+              <div class="option-content">
+                Ho una copertura parziale che integra il pubblico
+                <span class="points">3 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q8" value="1">
+              <div class="option-content">
+                Pagherei privatamente quando necessario
+                <span class="points">1 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q8" value="0">
+              <div class="option-content">
+                Mi affido completamente al sistema pubblico
+                <span class="points">0 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="question-title">
+            <span class="question-number">9.</span>
+            Come hai costruito la copertura per eventuali spese mediche importanti?
+          </div>
+          <div class="options">
+            <label class="option">
+              <input type="radio" name="q9" value="5">
+              <div class="option-content">
+                Ho coperture complete: polizza con massimali alti, rete convenzionata, franchigie contenute
+                <span class="points">5 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q9" value="3">
+              <div class="option-content">
+                Ho copertura parziale che posso integrare con i risparmi
+                <span class="points">3 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q9" value="2">
+              <div class="option-content">
+                Utilizzerei i miei risparmi
+                <span class="points">2 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q9" value="0">
+              <div class="option-content">
+                Dovrei organizzarmi meglio
+                <span class="points">0 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="question-title">
+            <span class="question-number">10.</span>
+            Come hai preparato la protezione del tuo reddito in caso di interruzione prolungata?
+          </div>
+          <div class="options">
+            <label class="option">
+              <input type="radio" name="q10" value="6">
+              <div class="option-content">
+                Ho un capitale o rendita che garantisce continuità + servizi di assistenza
+                <span class="points">6 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q10" value="4">
+              <div class="<div class="option-content">
+                Ho coperture parziali che integro con risparmi personali
+                <span class="points">4 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q10" value="2">
+              <div class="option-content">
+                Ho un fondo di emergenza per alcuni mesi
+                <span class="points">2 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q10" value="0">
+              <div class="option-content">
+                Non ho ancora organizzato protezioni specifiche
+                <span class="points">0 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="question-title">
+            <span class="question-number">11.</span>
+            Hai pianificato per eventuali necessità di assistenza a lungo termine?
+          </div>
+          <div class="options">
+            <label class="option">
+              <input type="radio" name="q11" value="4">
+              <div class="option-content">
+                Sì, ho una polizza LTC o un budget dedicato per oltre 24 mesi
+                <span class="points">4 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q11" value="3">
+              <div class="option-content">
+                Ho un budget che coprirebbe 12 mesi
+                <span class="points">3 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q11" value="1">
+              <div class="option-content">
+                Conterei sui risparmi generici
+                <span class="points">1 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q11" value="0">
+              <div class="option-content">
+                Non ho ancora considerato questo aspetto
+                <span class="points">0 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="question-title">
+            <span class="question-number">12.</span>
+            Come hai organizzato la protezione della tua famiglia e la pianificazione successoria?
+          </div>
+          <div class="options">
+            <label class="option">
+              <input type="radio" name="q12" value="5">
+              <div class="option-content">
+                Ho un piano scritto completo con coperture adeguate e passaggio beni pianificato
+                <span class="points">5 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q12" value="3">
+              <div class="option-content">
+                Ho alcune tutele attive e una pianificazione parziale
+                <span class="points">3 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q12" value="1">
+              <div class="option-content">
+                Ho idee confuse ma devo organizzarmi meglio
+                <span class="points">1 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q12" value="0">
+              <div class="option-content">
+                Non ho ancora affrontato seriamente la pianificazione
+                <span class="points">0 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sezione Futuro -->
+      <div class="section" data-section="futuro">
+        <div class="section-header">
+          <span>Sezione 3 - Protezione del Futuro Finanziario</span>
+          <span class="section-score" id="futuro-score">0 / 30</span>
+        </div>
+
+        <div class="question">
+          <div class="question-title">
+            <span class="question-number">13.</span>
+            Quanto conosci la tua situazione previdenziale futura?
+          </div>
+          <div class="options">
+            <label class="option">
+              <input type="radio" name="q13" value="5">
+              <div class="option-content">
+                Conosco precisamente la mia pensione futura e sarà adeguata ai miei bisogni
+                <span class="points">5 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q13" value="3">
+              <div class="option-content">
+                La conosco ma sarà insufficiente, sto integrando
+                <span class="points">3 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q13" value="1">
+              <div class="option-content">
+                Ho un'idea vaga e devo approfondire
+                <span class="points">1 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q13" value="0">
+              <div class="option-content">
+                Non ho mai fatto un'analisi seria
+                <span class="points">0 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="question-title">
+            <span class="question-number">14.</span>
+            Come stai gestendo l'integrazione previdenziale e i vantaggi fiscali?
+          </div>
+          <div class="options">
+            <label class="option">
+              <input type="radio" name="q14" value="5">
+              <div class="option-content">
+                Ho previdenza integrativa attiva e sfrutto la deduzione fiscale massima
+                <span class="points">5 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q14" value="3">
+              <div class="option-content">
+                Ho previdenza integrativa ma non ottimizzata fiscalmente
+                <span class="points">3 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q14" value="1">
+              <div class="option-content">
+                Sto solo valutando le opzioni
+                <span class="points">1 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q14" value="0">
+              <div class="option-content">
+                Non ho ancora preso azioni concrete
+                <span class="points">0 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="question-title">
+            <span class="question-number">15.</span>
+            Hai costruito un adeguato fondo di emergenza?
+          </div>
+          <div class="options">
+            <label class="option">
+              <input type="radio" name="q15" value="4">
+              <div class="option-content">
+                Sì, oltre 6 mesi di spese coperte
+                <span class="points">4 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q15" value="3">
+              <div class="option-content">
+                3-5 mesi di spese coperte
+                <span class="points">3 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q15" value="1">
+              <div class="option-content">
+                1-2 mesi di spese coperte
+                <span class="points">1 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q15" value="0">
+              <div class="option-content">
+                Non ho una riserva specifica
+                <span class="points">0 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="question-title">
+            <span class="question-number">16.</span>
+            Come definiresti la tua pianificazione degli obiettivi finanziari?
+          </div>
+          <div class="options">
+            <label class="option">
+              <input type="radio" name="q16" value="3">
+              <div class="option-content">
+                Ho obiettivi chiari con cifre specifiche e piani di risparmio automatici
+                <span class="points">3 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q16" value="2">
+              <div class="option-content">
+                Ho alcuni obiettivi definiti
+                <span class="points">2 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q16" value="1">
+              <div class="option-content">
+                Ho idee generiche sui miei obiettivi
+                <span class="points">1 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q16" value="0">
+              <div class="option-content">
+                Non ho una pianificazione strutturata
+                <span class="points">0 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="question-title">
+            <span class="question-number">17.</span>
+            Come valuti il tuo equilibrio patrimoniale e la capacità di risparmio?
+          </div>
+          <div class="options">
+            <label class="option">
+              <input type="radio" name="q17" value="3">
+              <div class="option-content">
+                Portafoglio equilibrato con capacità di risparmio superiore al 20%
+                <span class="points">3 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q17" value="2">
+              <div class="option-content">
+                Abbastanza equilibrato con risparmio del 10-20%
+                <span class="points">2 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q17" value="1">
+              <div class="option-content">
+                Sbilanciato o risparmio inferiore al 10%
+                <span class="points">1 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q17" value="0">
+              <div class="option-content">
+                Non ho mai fatto una valutazione o non riesco a risparmiare
+                <span class="points">0 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="question-title">
+            <span class="question-number">18.</span>
+            Come reagisci durante i periodi di volatilità dei mercati finanziari?
+          </div>
+          <div class="options">
+            <label class="option">
+              <input type="radio" name="q18" value="4">
+              <div class="option-content">
+                Seguo il mio piano di investimento e ribalancio strategicamente
+                <span class="points">4 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q18" value="3">
+              <div class="option-content">
+                Mantengo la calma e non cambio strategia
+                <span class="points">3 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q18" value="2">
+              <div class="option-content">
+                Mi preoccupo ma resisto alle decisioni impulsive
+                <span class="points">2 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+            <label class="option">
+              <input type="radio" name="q18" value="0">
+              <div class="option-content">
+                Tenderei a vendere tutto e bloccare gli investimenti
+                <span class="points">0 pt</span>
+              </div>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button type="button" class="btn btn-primary" id="calculateBtn">Calcola Risultati</button>
+        <button type="button" class="btn btn-secondary" id="resetBtn">Azzera Risposte</button>
+        <button type="button" class="btn btn-secondary" id="printBtn">Stampa Report</button>
+      </div>
+    </form>
+
+    <div class="results" id="results">
+      <div class="results-header">
+        <div class="total-score" id="totalScore">0 / 100</div>
+        <div class="rating" id="rating">Preparazione: Da valutare</div>
+      </div>
+
+      <div class="scores-grid">
+        <div class="score-card">
+          <h3>Protezione Patrimonio</h3>
+          <div class="score-value" id="patrimonioResult">0 / 30</div>
+        </div>
+        <div class="score-card">
+          <h3>Protezione Persona</h3>
+          <div class="score-value" id="personaResult">0 / 40</div>
+        </div>
+        <div class="score-card">
+          <h3>Futuro Finanziario</h3>
+          <div class="score-value" id="futuroResult">0 / 30</div>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <canvas id="radarChart" width="400" height="300"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>&copy; 2025 Metodo  - Analisi del Benessere Finanziario</p>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+class AnalisiDelBenessere {
+  constructor() {
+    this.totalQuestions = 18;
+    this.maxScores = {
+      patrimonio: 30,
+      persona: 40,
+      futuro: 30
+    };
+    this.questionMapping = {
+      patrimonio: [1, 2, 3, 4, 5, 6],
+      persona: [7, 8, 9, 10, 11, 12],
+      futuro: [13, 14, 15, 16, 17, 18]
+    };
+    this.radarChart = null;
+    this.init();
+  }
+
+  init() {
+    this.attachEventListeners();
+    this.setupProgressTracking();
+  }
+
+  attachEventListeners() {
+    document.getElementById('calculateBtn').addEventListener('click', () => this.calculateResults());
+    document.getElementById('resetBtn').addEventListener('click', () => this.resetForm());
+    document.getElementById('printBtn').addEventListener('click', () => window.print());
+    
+    // Add change listeners to radio buttons for real-time updates
+    const radios = document.querySelectorAll('input[type="radio"]');
+    radios.forEach(radio => {
+      radio.addEventListener('change', () => this.updateProgress());
+    });
+  }
+
+  setupProgressTracking() {
+    const radios = document.querySelectorAll('input[type="radio"]');
+    radios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        this.updateProgress();
+        this.updateSectionScores();
+      });
+    });
+  }
+
+  updateProgress() {
+    const answeredQuestions = this.getAnsweredQuestions();
+    const progressPercentage = (answeredQuestions / this.totalQuestions) * 100;
+    document.getElementById('progress').style.width = progressPercentage + '%';
+  }
+
+  getAnsweredQuestions() {
+    let answered = 0;
+    for (let i = 1; i <= this.totalQuestions; i++) {
+      const radios = document.getElementsByName('q' + i);
+      for (const radio of radios) {
+        if (radio.checked) {
+          answered++;
+          break;
+        }
+      }
+    }
+    return answered;
+  }
+
+  updateSectionScores() {
+    const scores = this.calculateSectionScores();
+    
+    document.getElementById('patrimonio-score').textContent = `${scores.patrimonio} / ${this.maxScores.patrimonio}`;
+    document.getElementById('persona-score').textContent = `${scores.persona} / ${this.maxScores.persona}`;
+    document.getElementById('futuro-score').textContent = `${scores.futuro} / ${this.maxScores.futuro}`;
+  }
+
+  calculateSectionScores() {
+    const scores = { patrimonio: 0, persona: 0, futuro: 0 };
+    
+    Object.keys(this.questionMapping).forEach(section => {
+      this.questionMapping[section].forEach(questionNum => {
+        const radios = document.getElementsByName('q' + questionNum);
+        for (const radio of radios) {
+          if (radio.checked) {
+            scores[section] += parseInt(radio.value);
+            break;
+          }
+        }
+      });
+    });
+    
+    return scores;
+  }
+
+  calculateResults() {
+    const scores = this.calculateSectionScores();
+    const totalScore = scores.patrimonio + scores.persona + scores.futuro;
+    
+    // Update display
+    document.getElementById('totalScore').textContent = `${totalScore} / 100`;
+    document.getElementById('patrimonioResult').textContent = `${scores.patrimonio} / ${this.maxScores.patrimonio}`;
+    document.getElementById('personaResult').textContent = `${scores.persona} / ${this.maxScores.persona}`;
+    document.getElementById('futuroResult').textContent = `${scores.futuro} / ${this.maxScores.futuro}`;
+    
+    // Update rating
+    this.updateRating(totalScore);
+    
+    // Show results
+    document.getElementById('results').style.display = 'block';
+    
+    // Create/update chart
+    this.createRadarChart(scores);
+    
+    // Scroll to results
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  updateRating(totalScore) {
+    const ratingElement = document.getElementById('rating');
+    
+    if (totalScore >= 80) {
+      ratingElement.textContent = 'Preparazione: Eccellente (80-100)';
+      ratingElement.className = 'rating excellent';
+    } else if (totalScore >= 60) {
+      ratingElement.textContent = 'Preparazione: Buona (60-79)';
+      ratingElement.className = 'rating good';
+    } else if (totalScore >= 40) {
+      ratingElement.textContent = 'Preparazione: Sufficiente (40-59)';
+      ratingElement.className = 'rating good';
+    } else {
+      ratingElement.textContent = 'Preparazione: Da rafforzare (0-39)';
+      ratingElement.className = 'rating needs-improvement';
+    }
+  }
+
+  createRadarChart(scores) {
+    const ctx = document.getElementById('radarChart').getContext('2d');
+    
+    if (this.radarChart) {
+      this.radarChart.destroy();
+    }
+    
+    // Convert scores to percentages
+    const patrimonioPct = (scores.patrimonio / this.maxScores.patrimonio) * 100;
+    const personaPct = (scores.persona / this.maxScores.persona) * 100;
+    const futuroPct = (scores.futuro / this.maxScores.futuro) * 100;
+    
+    this.radarChart = new Chart(ctx, {
+      type: 'radar',
+      data: {
+        labels: ['Protezione Patrimonio', 'Protezione Persona', 'Futuro Finanziario'],
+        datasets: [{
+          label: 'Livello di Preparazione (%)',
+          data: [patrimonioPct, personaPct, futuroPct],
+          fill: true,
+          backgroundColor: 'rgba(43, 121, 194, 0.2)',
+          borderColor: 'rgba(43, 121, 194, 1)',
+          pointBackgroundColor: 'rgba(43, 121, 194, 1)',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: 'rgba(43, 121, 194, 1)',
+          borderWidth: 2,
+          pointRadius: 5
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          r: {
+            angleLines: {
+              display: true
+            },
+            suggestedMin: 0,
+            suggestedMax: 100,
+            ticks: {
+              stepSize: 20,
+              callback: function(value) {
+                return value + '%';
+              }
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              padding: 20
+            }
+          }
+        }
+      }
+    });
+  }
+
+  resetForm() {
+    // Reset all radio buttons
+    const radios = document.querySelectorAll('input[type="radio"]');
+    radios.forEach(radio => radio.checked = false);
+    
+    // Reset text inputs
+    const inputs = document.querySelectorAll('input[type="text"], input[type="date"]');
+    inputs.forEach(input => input.value = '');
+    
+    // Reset progress bar
+    document.getElementById('progress').style.width = '0%';
+    
+    // Reset section scores
+    document.getElementById('patrimonio-score').textContent = '0 / 30';
+    document.getElementById('persona-score').textContent = '0 / 40';
+    document.getElementById('futuro-score').textContent = '0 / 30';
+    
+    // Hide results
+    document.getElementById('results').style.display = 'none';
+    
+    // Destroy chart if exists
+    if (this.radarChart) {
+      this.radarChart.destroy();
+      this.radarChart = null;
+    }
+  }
+}
+
+// Initialize the application when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  new AnalisiDelBenessere();
+});
+</script>
+
+</body>
+</html>
